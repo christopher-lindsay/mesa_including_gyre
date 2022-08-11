@@ -668,6 +668,10 @@
       integer, parameter :: h_TDC_num_cells = h_C_cntr + 1
       integer, parameter :: h_retries = h_TDC_num_cells + 1
 
+      integer, parameter :: h_nu_max_from_gyre = h_retries + 1
+      integer, parameter :: h_fundamental_freq = h_nu_max_from_gyre + 1
+
+
       integer, parameter :: h_col_id_max = h_retries
 
       character (len=maxlen_history_column_name) :: history_column_name(h_col_id_max)
@@ -1339,6 +1343,9 @@
          history_column_name(h_retries) = 'retries'
          history_column_name(h_TDC_num_cells) = 'TDC_num_cells'
          
+         history_column_name(h_nu_max_from_gyre) = 'nu_max_from_gyre'
+         history_column_name(h_fundamental_freq) = 'fundamental_freq'
+
          cnt = 0
          do i=1,h_col_id_max
             if (len_trim(history_column_name(i)) == 0) then
