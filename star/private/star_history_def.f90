@@ -668,8 +668,8 @@
       integer, parameter :: h_TDC_num_cells = h_C_cntr + 1
       integer, parameter :: h_retries = h_TDC_num_cells + 1
 
-      integer, parameter :: h_nu_max_from_gyre = h_retries + 1
-      integer, parameter :: h_fundamental_freq = h_nu_max_from_gyre + 1
+      integer, parameter :: h_delta_nu_from_gyre = h_retries + 1
+      integer, parameter :: h_fundamental_freq = h_delta_nu_from_gyre + 1
 
 
       integer, parameter :: h_col_id_max = h_retries
@@ -1343,7 +1343,7 @@
          history_column_name(h_retries) = 'retries'
          history_column_name(h_TDC_num_cells) = 'TDC_num_cells'
          
-         history_column_name(h_nu_max_from_gyre) = 'nu_max_from_gyre'
+         history_column_name(h_delta_nu_from_gyre) = 'delta_nu_from_gyre'
          history_column_name(h_fundamental_freq) = 'fundamental_freq'
 
          cnt = 0
