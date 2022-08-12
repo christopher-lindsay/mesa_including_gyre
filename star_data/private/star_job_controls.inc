@@ -9,7 +9,7 @@
 
       logical :: pause_before_terminate
 
-      character (len=1000) :: profile_columns_file, history_columns_file
+      character (len=1000) :: profile_columns_file, history_columns_file, gyre_inlist_name
 
       logical :: show_log_description_at_start, list_net_reactions
       logical :: show_net_reactions_info, show_net_species_info
