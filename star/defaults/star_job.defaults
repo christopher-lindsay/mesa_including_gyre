@@ -220,6 +220,15 @@
     profile_columns_file = ''
 
 
+      ! gyre_inlist_name
+      ! ~~~~~~~~~~~~~~~~~~~~
+
+      ! if null string, use default.
+      ! refers to the name of the gyre inlist file (gyre.in) that will be used for calculating delta_nu_with_gyre 
+      ! ::
+
+    gyre_inlist_name = ''
+
       ! save_model_number
       ! ~~~~~~~~~~~~~~~~~
 

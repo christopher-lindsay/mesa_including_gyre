@@ -42,6 +42,7 @@
          pause_before_terminate, &
          profile_columns_file, &
          history_columns_file, &
+         gyre_inlist_name, &
          show_log_description_at_start, &
          list_net_reactions, &
          show_net_reactions_info, &
@@ -677,6 +678,7 @@
          s% job% pause_before_terminate = pause_before_terminate
          s% job% profile_columns_file = profile_columns_file
          s% job% history_columns_file = history_columns_file
+         s% job% gyre_inlist_name = gyre_inlist_name
          s% job% show_log_description_at_start = show_log_description_at_start
          s% job% list_net_reactions = list_net_reactions
          s% job% show_net_reactions_info = show_net_reactions_info
@@ -1235,6 +1237,7 @@
          pause_before_terminate = s% job% pause_before_terminate
          profile_columns_file = s% job% profile_columns_file
          history_columns_file = s% job% history_columns_file
+         gyre_inlist_name = s% job% gyre_inlist_name
          show_log_description_at_start = s% job% show_log_description_at_start
          list_net_reactions = s% job% list_net_reactions
          show_net_reactions_info = s% job% show_net_reactions_info
