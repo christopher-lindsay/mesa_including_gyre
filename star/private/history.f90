@@ -31,7 +31,7 @@
       use chem_def
       use history_specs
       use star_utils
-      use using_gyre
+      ! use using_gyre ! TODO
 
       implicit none
 

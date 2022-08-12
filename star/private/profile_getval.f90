@@ -2282,10 +2282,10 @@
             case(p_max_abs_xa_corr)
                val = s% max_abs_xa_corr(k)
 
-            case(xi_r_fund)
-                val = s% xi_r_fund(k)
-            case(xi_r_1o)
-                val = s% xi_r_1o(k)
+            case(p_xi_r_fund)
+                val = 0 ! s% xi_r_fund(k) ! TODO 
+            case(p_xi_r_1o)
+                val = 0 ! s% xi_r_1o(k) ! TODO 
 
             case default
                write(*,*) 'FATAL ERROR in profile_getval', c, k
