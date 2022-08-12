@@ -29,8 +29,6 @@
       use const_def
       use utils_lib
       use gyre_lib
-      use astero_lib
-      use astero_def
 
       implicit none
 
@@ -62,7 +60,7 @@
 
 
         if (GYRE_IS_ENABLED) then         
-         
+         ! load the gyre inlist and initialize gyre
          ! first try local directory
          filename = gyre_inlist_name
 
@@ -74,15 +72,31 @@
 
             if(.not.exists) filename = trim(mesa_dir) // '/star/defaults/gyre_delta_nu.defaults'
          else
-            ! User had include '' in their profile_columns.list file, so dont try to load the local one, jump to the defaults
+            ! User had include '' in their gyre.in file, so dont try to load the local one, jump to the defaults
             if (len_trim(filename) == 0) filename =trim(mesa_dir) // '/star/defaults/gyre_delta_nu.defaults'
          end if
 
-         call init_gyre(filename)
+
+         ! initialize gyre and set constants using the subroutines in gyre_lib 
+         call gyre_init(filename)
+
+         call gyre_set_constant('G_GRAVITY', standard_cgrav)
+         call gyre_set_constant('C_LIGHT', clight)
+         call gyre_set_constant('A_RADIATION', crad)
+
+         call gyre_set_constant('M_SUN', Msun)
+         call gyre_set_constant('R_SUN', Rsun)
+         call gyre_set_constant('L_SUN', Lsun)
+
+         call gyre_set_constant('GYRE_DIR', TRIM(mesa_dir)//'/gyre/gyre')
+
          
          num_results = 0 
 
-         call astero_gyre_get_modes(id, 0, .TRUE., ierr) 
+
+         ! call gyre_get_modes for the radial (el=0) modes
+
+
          if (ierr /=0) then 
          print *, 'Failed when calling do_gyre_get_modes' 
          return 
