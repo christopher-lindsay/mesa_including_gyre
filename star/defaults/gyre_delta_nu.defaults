@@ -1,0 +1,32 @@
+&model
+/
+
+&mode
+   l = 0
+   n_pg_max = 50
+/
+
+&osc
+   outer_bound = 'JCD' 
+   inner_bound = 'ZERO_R' 
+/
+
+&rot
+/
+
+&num
+   diff_scheme = 'COLLOC_GL4' 
+/
+
+&scan
+   grid_type = 'LINEAR'
+   freq_min =  0.01  
+   freq_max = 1.1 
+   freq_units = 'UHZ' 
+   freq_min_units = 'ACOUSTIC_CUTOFF'
+   freq_max_units = 'ACOUSTIC_CUTOFF'
+   n_freq = 100 
+/
+
+&grid
+/
