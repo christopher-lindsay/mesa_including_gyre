@@ -3008,9 +3008,10 @@
                   end if
                end do
                is_int_val = .true.
-
+            
             case (h_delta_nu_from_gyre)
-               int_val = 0 ! TODO 
+               call get_Delta_nu(id, Delta_nu)
+               val = Delta_nu 
 
             case (h_fundamental_freq)
                int_val = 0 ! TODO 

@@ -45,11 +45,11 @@
 
        
 
-       subroutine get_Delta_nu(id, Delta_nu, num_freqs) 
+       subroutine get_Delta_nu(id, Delta_nu) 
 
          integer, intent(in) :: id
          real(dp), intent(out) :: Delta_nu 
-         integer, intent(out) :: num_freqs
+         integer :: num_freqs
          integer :: ierr, n,i, num_sel
          real(dp), allocatable :: global_data(:), sel_ord(:), sel_nu(:) 
          real(dp), allocatable :: point_data(:,:)  
