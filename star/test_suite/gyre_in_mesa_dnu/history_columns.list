@@ -748,6 +748,11 @@
       !gs_per_delta_nu ! delta_nu / (nu_max**2*delta_Pg)
          ! number of g-modes per delta_nu at nu_max
 
+      delta_nu_from_gyre ! large frequency separation from radial modes (muHz)
+      fundamental_freq ! frequency of the l=0, n=1 mode (muHz)
+      first_overtone_freq ! frequency of the l=0, n=2 mode (muHz)
+
+
       !int_k_r_dr_nu_max_Sl1 ! integral of k_r*dr where nu < N < Sl for nu = nu_max, l=1
       !int_k_r_dr_2pt0_nu_max_Sl1 ! integral of k_r*dr where nu < N < Sl for nu = nu_max*2, l=1
       !int_k_r_dr_0pt5_nu_max_Sl1 ! integral of k_r*dr where nu < N < Sl for nu = nu_max/2, l=1
