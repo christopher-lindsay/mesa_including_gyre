@@ -128,6 +128,43 @@
        end subroutine get_Delta_nu
 
 
+
+       subroutine get_fundamental_mode(id, nu_fund, xi_fund, num_freqs, radial_modes_called) 
+         integer, intent(in) :: id
+         ! find the gyre inlist
+         real(dp), intent(out) :: nu_fund
+         integer, intent(out) :: num_freqs
+         real(dp), allocatable, intent(out) :: xi_fund(:) !, other_array(:)
+         integer :: ierr, n,i, num_sel
+         
+         type(star_info), pointer :: s
+
+         ierr = 0 
+         call star_ptr(id, s, ierr) 
+         if (ierr /= 0) return 
+
+         !From here, get the gyre pulse data
+
+
+         call init_gyre('NAMEOFGYREINLIST.in')
+         if (ierr /=0) then               !keep_surface, add_atmosphere 
+         print *, 'Failed when caling star_get_pulse_data' 
+         return 
+         end if 
+
+         num_results = 0 
+         call astero_gyre_get_modes(id, 0, .TRUE., ierr) 
+         if (ierr /=0) then 
+         print *, 'Failed when calling do_gyre_get_modes' 
+         return 
+         end if
+
+         ! CALCULATE SHIT 
+
+         return 
+       end subroutine get_fundamental_mode
+
+       
        subroutine get_lsq_fit(n, x, y, m, b)
          integer, intent(in) :: n 
          real(dp), intent(in) :: x(n), y(n) 
