@@ -3011,15 +3011,14 @@
                is_int_val = .true.
             
             case (h_delta_nu_from_gyre)
-               call get_Delta_nu(id, Delta_nu)
-               val = Delta_nu 
+               !call get_Delta_nu(id, Delta_nu) ! TODO
+               val = 0 ! Delta_nu ! TODO 
 
             case (h_fundamental_freq)
                int_val = 0 ! TODO 
 
-            case (h_firt_overtone_freq)
+            case (h_first_overtone_freq)
                int_val = 0 ! TODO 
-		
                
             case default
                ierr = -1
