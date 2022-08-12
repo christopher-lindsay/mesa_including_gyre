@@ -63,7 +63,6 @@ endif
 
 SRCS = \
    star_def.f90 \
-   using_gyre.f90 \
    star_profile_def.f90 \
    star_history_def.f90 \
    star_private_def.f90 \
@@ -215,6 +214,7 @@ SRCS = \
    pre_ms_model.f90 \
    init_model.f90 \
    remove_shells.f90 \
+   using_gyre.f90 \
    init.f90 \
    star_job_ctrls_io.f90 \
    star_lib.f90 \

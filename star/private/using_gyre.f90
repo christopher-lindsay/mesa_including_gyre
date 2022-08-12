@@ -30,7 +30,7 @@
       use utils_lib
       use gyre_lib
       use astero_lib
-      use astero_def 
+      use astero_def
 
       implicit none
 
