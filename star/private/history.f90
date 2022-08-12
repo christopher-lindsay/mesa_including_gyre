@@ -3008,6 +3008,16 @@
                   end if
                end do
                is_int_val = .true.
+
+            case (h_delta_nu_from_gyre)
+               int_val = 0 ! TODO 
+
+            case (h_fundamental_freq)
+               int_val = 0 ! TODO 
+
+            case (h_firt_overtone_freq)
+               int_val = 0 ! TODO 
+		
                
             case default
                ierr = -1
