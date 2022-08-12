@@ -36,7 +36,9 @@
       !public :: get_Delta_nu, get_nth_radial_mode
 
       logical, parameter :: dbg = .false.
-
+      real(dp) :: radial_freqs(100), radial_orders(100), radial_inertias(100) 
+      integer :: num_radial_modes         
+      logical :: add_atmosphere, keep_surface_point, add_center_point 
 
       contains
 
@@ -146,8 +148,63 @@
       !endif
 
       !end subroutine get_Delta_nu
-
-
+      subroutine get_radial_modes(id,s,ierr) 
+            integer, intent(in) :: id 
+            integer, intent(out) :: ierr 
+            type(star_info), pointer :: s 
+            integer :: numl0
+            real(dp), allocatable :: global_data(:) 
+            real(dp), allocatable :: point_data(:,:) 
+            integer               :: ipar(0), num_modes, i ,itemp, istart 
+            real(dp)              :: rpar(0), temp_freqs(100), temp_ens(100)  
+            real(dp) :: temp 
+     
+            add_atmosphere = s% add_atmosphere_to_pulse_data
+            keep_surface_point = s% add_center_point_to_pulse_data
+            add_center_point = s% keep_surface_point_for_pulse_data
+            ! Pass model to GYRE 
+            ! Logcials are add_center, keep_surface,add_atmosphere
+            call star_get_pulse_data(id, 'GYRE', add_center_point, & 
+                 keep_surface_point , add_atmosphere, & 
+                    global_data, point_data, ierr) 
+            if (ierr /= 0) then 
+                    print *, 'Failed when calling star_get_pulse_data' 
+                    return 
+            end if 
+            call gyre_set_model(global_data, point_data, 101) 
+            !Zero out previous data 
+            radial_freqs(:) = 0d0
+            radial_orders(:) = 0  
+            radial_inertias(:) = 0d0 
+            ! Run GYRE to get modes
+            ! Get l = 0 modes 
+            num_modes = 0 
+            temp_freqs(:) = 0 
+            temp_ens(:) = 0 
+            call gyre_get_modes(0, process_mode, ipar, rpar) 
+            
+            num_radial_modes = num_modes 
+       
+        contains 
+          subroutine process_mode (md, ipar, rpar, retcode) 
+            type(mode_t), intent(in) :: md
+            integer, intent(inout) :: ipar(:) 
+            real(dp), intent(inout) :: rpar(:) 
+            integer, intent(out) :: retcode 
+            integer :: k 
+            type (star_info), pointer :: s
+            ierr = 0 
+            call star_ptr(id, s, ierr) 
+            if (ierr/=0) return 
+            if (md%n_p >= 1 .and. md%n_p <=50) then 
+              num_modes = num_modes + 1 
+              radial_freqs(num_modes) = REAL(md%freq('UHZ')) 
+              radial_orders(num_modes) = md% n_p
+              radial_inertias(num_modes) = md% E_norm()
+            end if 
+            retcode = 0 
+          end subroutine process_mode 
+        end subroutine get_radial_modes
 
       !subroutine run_gyre_radial(id, ierr)
 
