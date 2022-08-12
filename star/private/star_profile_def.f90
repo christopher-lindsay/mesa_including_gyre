@@ -710,10 +710,10 @@
 
       integer, parameter :: p_lum_rad_div_L_Edd_sub_fourPrad_div_PchiT = p_log_du_kick_div_du + 1
 
-      integer, parameter :: xi_r_fund = p_lum_rad_div_L_Edd_sub_fourPrad_div_PchiT + 1
-      integer, parameter :: xi_r_l1 = xi_r_fund + 1
+      integer, parameter :: p_xi_r_fund = p_lum_rad_div_L_Edd_sub_fourPrad_div_PchiT + 1
+      integer, parameter :: p_xi_r_1o = p_xi_r_fund + 1
 
-      integer, parameter :: p_col_id_max = xi_r_l1
+      integer, parameter :: p_col_id_max = p_xi_r_1o
 
       character (len=maxlen_profile_column_name) :: profile_column_name(p_col_id_max)
       type (integer_dict), pointer :: profile_column_names_dict
@@ -1400,8 +1400,8 @@
 
          profile_column_name(p_lum_rad_div_L_Edd_sub_fourPrad_div_PchiT) = 'lum_rad_div_L_Edd_sub_fourPrad_div_PchiT'
 
-         profile_column_name(xi_r_fund) = 'xi_r_fund'
-         profile_column_name(xi_r_1o) = 'xi_r_1o'
+         profile_column_name(p_xi_r_fund) = 'xi_r_fund'
+         profile_column_name(p_xi_r_1o) = 'xi_r_1o'
 
          cnt = 0
          do i=1,p_col_id_max
