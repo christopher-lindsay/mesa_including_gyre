@@ -1,0 +1,29 @@
+&star_job
+    pgstar_flag = .true.
+    load_saved_model = .true.
+    load_model_filename = 'standard_tams.mod'
+
+
+/ ! end of star_job namelist
+
+
+&eos
+/ ! end of eos namelist
+
+
+&kap
+Zbase = 0.014
+/ ! end of kap namelist
+
+
+&controls
+  ! see star/defaults/controls.defaults
+
+  ! when to stop
+    log_Teff_lower_limit = 3.7
+
+
+/ ! end of controls namelist
+
+&pgstar
+/
