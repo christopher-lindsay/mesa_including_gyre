@@ -35,7 +35,7 @@
       implicit none
 
       private
-      public :: get_Delta_nu !, get_fundamental
+      public :: get_Delta_nu, get_nth_radial_mode
 
       logical, parameter :: dbg = .false.
 
@@ -89,9 +89,7 @@
          end if
 
          nu_max = s% nu_max 
-
          nu_range = 0.5 * nu_max**0.9 ! Mosser et al. 2010 
-
          num_sel = 0 
 
          allocate(use_n(num_results)) 
@@ -123,7 +121,6 @@
          deallocate(sel_ord) 
          deallocate(sel_nu) 
          
-         
          ! Clear out frequency results     
          num_results = 0 
          el = 0 
@@ -140,7 +137,7 @@
 
 
 
-       subroutine run_gyre_fund(id, ierr)
+       subroutine run_gyre_radial(id, ierr)
 
            integer, intent(in)  :: id
            integer, intent(out) :: ierr
@@ -175,7 +172,7 @@
            call gyre_set_model(global_data, point_data, 101)
 
            ! Run GYRE to get modes
-           call gyre_get_modes(0, process_fund_mode, ipar, rpar)
+           call gyre_get_modes(0, process_radial_modes, ipar, rpar)
 
            ! show that fundamental gyre has run
            gyre_fund_has_run = .true.
@@ -223,7 +220,7 @@
          end subroutine process_radial_modes
 
 
-        end subroutine run_gyre_fund
+        end subroutine run_gyre_radial
 
 
        
