@@ -57,6 +57,10 @@
          logical, allocatable :: use_n(:)
          type(star_info), pointer :: s
 
+
+         
+
+
          ierr = 0 
          call star_ptr(id, s, ierr) 
          if (ierr /= 0) return 
