@@ -1854,6 +1854,7 @@ s% gradT_excess_max_log_tau_full_off = gradT_excess_max_log_tau_full_off
  ! asteroseismology controls
 
  s% get_delta_nu_from_scaled_solar = get_delta_nu_from_scaled_solar
+ s% use_gyre_on_the_fly = use_gyre_on_the_fly
  s% nu_max_sun = nu_max_sun
  s% delta_nu_sun = delta_nu_sun
  s% Teff_sun = Teff_sun
@@ -3536,6 +3537,7 @@ s% gradT_excess_max_log_tau_full_off = gradT_excess_max_log_tau_full_off
  ! asteroseismology controls
 
  get_delta_nu_from_scaled_solar = s% get_delta_nu_from_scaled_solar
+ use_gyre_on_the_fly = s% use_gyre_on_the_fly
  nu_max_sun = s% nu_max_sun
  delta_nu_sun = s% delta_nu_sun
  Teff_sun = s% Teff_sun
