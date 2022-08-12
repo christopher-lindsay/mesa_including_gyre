@@ -63,6 +63,7 @@ endif
 
 SRCS = \
    star_def.f90 \
+   using_gyre.f90 \
    star_profile_def.f90 \
    star_history_def.f90 \
    star_private_def.f90 \

@@ -273,7 +273,7 @@
          integer, intent(out) :: int_val
          logical, intent(inout) :: int_flag
 
-         real(dp) :: raw_rate, xi_r_fundamental, xi_r_overtone
+         real(dp) :: raw_rate, p_xi_r_fundamental, p_xi_r_overtone
          type (T_Factors), pointer :: tf
          type (T_Factors), target :: tf2
          !integer, pointer :: reaction_id(:) ! maps net reaction number to reaction id
@@ -2282,12 +2282,19 @@
             case(p_max_abs_xa_corr)
                val = s% max_abs_xa_corr(k)
 
-            case(xi_r_fund)
-                call get_xi_r_fund(id, xi_r_fundamental, k)
-                val = xi_r_fundamental
-            case(xi_r_1o)
-                call get_xi_r_1o(id, xi_r_overtone, k)
-                val = xi_r_overtone
+<<<<<<< HEAD
+            case(p_xi_r_fund)
+                call get_xi_r_fund(id, p_xi_r_fundamental, k)
+                val = p_xi_r_fundamental
+            case(p_xi_r_1o)
+                call get_xi_r_1o(id, p_xi_r_overtone, k)
+                val = p_xi_r_overtone
+=======
+            case(p_xi_r_fund)
+                val = 0 ! s% xi_r_fund(k) ! TODO
+            case(p_xi_r_1o)
+                val = 0 ! s% xi_r_1o(k) ! TODO
+>>>>>>> e4e73314ab981285c48698fcd305df971d4eab93
 
             case default
                write(*,*) 'FATAL ERROR in profile_getval', c, k
