@@ -956,3 +956,6 @@
       ! c12_boundary_limit
       ! burn_min1
       ! burn_min2
+   ! radial displacements of the fundamental mode and the first overtone
+    ! xi_r_fund 
+    ! xi_r_1o
