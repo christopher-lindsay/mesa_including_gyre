@@ -670,9 +670,10 @@
 
       integer, parameter :: h_delta_nu_from_gyre = h_retries + 1
       integer, parameter :: h_fundamental_freq = h_delta_nu_from_gyre + 1
+      integer, parameter :: h_first_overtone_freq = h_fundamental_freq + 1
 
 
-      integer, parameter :: h_col_id_max = h_fundamental_freq
+      integer, parameter :: h_col_id_max = h_first_overtone_freq
 
       character (len=maxlen_history_column_name) :: history_column_name(h_col_id_max)
       type (integer_dict), pointer :: history_column_names_dict
@@ -1345,6 +1346,8 @@
 
          history_column_name(h_delta_nu_from_gyre) = 'delta_nu_from_gyre'
          history_column_name(h_fundamental_freq) = 'fundamental_freq'
+         history_column_name(h_first_overtone_freq) = 'first_overtone_freq'
+
 
          cnt = 0
          do i=1,h_col_id_max
