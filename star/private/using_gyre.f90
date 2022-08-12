@@ -140,40 +140,120 @@
 
 
 
-       subroutine get_fundamental_mode(id, nu_fund, xi_fund, num_freqs, radial_modes_called) 
-         integer, intent(in) :: id
-         ! find the gyre inlist
-         real(dp), intent(out) :: nu_fund
-         integer, intent(out) :: num_freqs
-         real(dp), allocatable, intent(out) :: xi_fund(:) !, other_array(:)
-         integer :: ierr, n,i, num_sel
-         
-         type(star_info), pointer :: s
+       subroutine run_gyre_fund(id, ierr)
 
-         ierr = 0 
-         call star_ptr(id, s, ierr) 
-         if (ierr /= 0) return 
+           integer, intent(in)  :: id
+           integer, intent(out) :: ierr
 
-         !From here, get the gyre pulse data
+           real(dp), allocatable :: global_data(:)
+           real(dp), allocatable :: point_data(:,:)
+           integer               :: ipar(0)
+           real(dp)              :: rpar(0)
+
+           type (star_info), pointer :: s
+           ierr = 0
+           call star_ptr(id, s, ierr)
+           if (ierr /= 0) return
+
+           ! Pass model data to GYRE
+           if (allocated(xi_r_radial)) deallocate(xi_r_fund)
+           allocate(xi_r_radial(s%nz))
+           xi_r_fund(:)=0
+           if (allocated(xi_r_dipole)) deallocate(xi_r_1o)
+           allocate(xi_r_dipole(s%nz))
+           xi_r_1o(:)=0
+
+           ! We need a different name for GYRE.in for fundamental mode
+           call star_get_pulse_data(id, 'GYRE', .FALSE., .TRUE., .FALSE., &
+                global_data, point_data, ierr)
+           if (ierr /= 0) then
+              print *,'Failed when calling star_get_pulse_data'
+              return
+           end if
+
+           call gyre_set_model(global_data, point_data, 101)
+
+           ! Run GYRE to get modes
+           call gyre_get_modes(0, process_fund_mode, ipar, rpar)
+
+           ! show that fundamental gyre has run
+           gyre_fund_has_run = .true.
+
+        contains
+
+           subroutine process_radial_modes(md, ipar, rpar, retcode)
+              type(mode_t), intent(in) :: md
+              integer, intent(inout)   :: ipar(:)
+              real(dp), intent(inout)  :: rpar(:)
+              integer, intent(out)     :: retcode
+              integer :: k
+
+              type (star_info), pointer :: s
+              ierr = 0
+              call star_ptr(id, s, ierr)
+              if (ierr /= 0) return
+
+            if (md%n_p >= 1 .and. md%n_p <= 100) then
+                ! Print out degree, radial order, mode inertia, and frequency
+                ! print *, 'Found mode: l, n_p, n_g, E, nu = ', &
+                !     md%l, md%n_p, md%n_g, md%E_norm(), REAL(md%freq('HZ'))
+
+                if (md%l == 0) then ! radial modes
+                    frequencies(md%l+1, md%n_p) = (md%freq('UHZ') - s% nu_max) / s% delta_nu
+
+                    if (md%n_p == 1) then ! store the fundamental eigenfunction
+                       if (allocated(xi_r_fund)) deallocate(xi_r_fund)
+                       allocate(xi_r_fund(md%n_k))
+                       do k = 1, md%n_k
+                          xi_r_radial(k) = md%xi_r(k)
+                       end do
+                       xi_r_radial = xi_r_radial(md%n_k:1:-1)
+
+                    else if (md%n_p == 2) then ! store the 1o eigenfunction
+                       if (allocated(xi_r_1o)) deallocate(xi_r_1o)
+                       allocate(xi_r_fund(md%n_k))
+                       do k = 1, md%n_k
+                          xi_r_radial(k) = md%xi_r(k)
+                       end do
+                       xi_r_radial = xi_r_radial(md%n_k:1:-1) 
+                    end if
 
 
-         call init_gyre('NAMEOFGYREINLIST.in')
-         if (ierr /=0) then               !keep_surface, add_atmosphere 
-         print *, 'Failed when caling star_get_pulse_data' 
-         return 
-         end if 
 
-         num_results = 0 
-         call astero_gyre_get_modes(id, 0, .TRUE., ierr) 
-         if (ierr /=0) then 
-         print *, 'Failed when calling do_gyre_get_modes' 
-         return 
-         end if
 
-         ! CALCULATE SHIT 
+                else if (inertias(md%n_p) > 0 .and. md%E_norm() > inertias(md%n_p)) then
+                    write (*,*) 'Skipping mode: inertia higher than already seen'
+                else ! non-radial modes
 
-         return 
-       end subroutine get_fundamental_mode
+                    ! choose the mode with the lowest inertia
+                    inertias(md%n_p) = md%E_norm()
+                    frequencies(md%l+1, md%n_p) = (md%freq('UHZ') - s% nu_max) / s% delta_nu
+                    ng_array(md%n_p) = md%n_g
+
+
+                    if (md%n_p == s% x_integer_ctrl(1) - 1) then ! store the eigenfunction 
+                       if (allocated(xi_r_dipole)) deallocate(xi_r_dipole)
+                       allocate(xi_r_dipole(md%n_k))
+
+                       write(*, *) "nk is", md%n_k 
+                       write(*, *) "nz is", s%nz
+
+                       do k = 1, md%n_k
+                          xi_r_dipole(k) = md%xi_r(k)
+                       end do
+                       xi_r_dipole = xi_r_dipole(md%n_k:1:-1)
+                    end if
+
+
+                end if
+            end if
+
+            retcode = 0
+         end subroutine process_radial_modes
+
+
+        end subroutine run_gyre_fund
+
 
        
        subroutine get_lsq_fit(n, x, y, m, b)
