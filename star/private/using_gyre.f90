@@ -35,7 +35,7 @@
       implicit none
 
       private
-      public :: get_Delta_nu, get_fundamental
+      public :: get_Delta_nu !, get_fundamental
 
       logical, parameter :: dbg = .false.
 
@@ -156,12 +156,13 @@
            if (ierr /= 0) return
 
            ! Pass model data to GYRE
-           if (allocated(xi_r_radial)) deallocate(xi_r_fund)
-           allocate(xi_r_radial(s%nz))
-           xi_r_fund(:)=0
-           if (allocated(xi_r_dipole)) deallocate(xi_r_1o)
-           allocate(xi_r_dipole(s%nz))
-           xi_r_1o(:)=0
+           if (allocated(xi_r_fund)) deallocate(xi_r_fund)
+           allocate(xi_r_fund(s%nz))
+           xi_r_fund(:) = 0
+           
+           if (allocated(xi_r_1o)) deallocate(xi_r_1o)
+           allocate(xi_r_1o(s%nz))
+           xi_r_1o(:) = 0
 
            ! We need a different name for GYRE.in for fundamental mode
            call star_get_pulse_data(id, 'GYRE', .FALSE., .TRUE., .FALSE., &
@@ -194,56 +195,26 @@
               if (ierr /= 0) return
 
             if (md%n_p >= 1 .and. md%n_p <= 100) then
-                ! Print out degree, radial order, mode inertia, and frequency
-                ! print *, 'Found mode: l, n_p, n_g, E, nu = ', &
-                !     md%l, md%n_p, md%n_g, md%E_norm(), REAL(md%freq('HZ'))
 
                 if (md%l == 0) then ! radial modes
-                    frequencies(md%l+1, md%n_p) = (md%freq('UHZ') - s% nu_max) / s% delta_nu
+                    frequencies(md%l+1, md%n_p) = md%freq('UHZ')
 
                     if (md%n_p == 1) then ! store the fundamental eigenfunction
                        if (allocated(xi_r_fund)) deallocate(xi_r_fund)
                        allocate(xi_r_fund(md%n_k))
                        do k = 1, md%n_k
-                          xi_r_radial(k) = md%xi_r(k)
+                          xi_r_fund(k) = md%xi_r(k)
                        end do
-                       xi_r_radial = xi_r_radial(md%n_k:1:-1)
+                       xi_r_fund = xi_r_fund(md%n_k:1:-1)
 
                     else if (md%n_p == 2) then ! store the 1o eigenfunction
                        if (allocated(xi_r_1o)) deallocate(xi_r_1o)
-                       allocate(xi_r_fund(md%n_k))
+                       allocate(xi_r_1o(md%n_k))
                        do k = 1, md%n_k
-                          xi_r_radial(k) = md%xi_r(k)
+                          xi_r_1o(k) = md%xi_r(k)
                        end do
-                       xi_r_radial = xi_r_radial(md%n_k:1:-1) 
+                       xi_r_1o = xi_r_1o(md%n_k:1:-1) 
                     end if
-
-
-
-
-                else if (inertias(md%n_p) > 0 .and. md%E_norm() > inertias(md%n_p)) then
-                    write (*,*) 'Skipping mode: inertia higher than already seen'
-                else ! non-radial modes
-
-                    ! choose the mode with the lowest inertia
-                    inertias(md%n_p) = md%E_norm()
-                    frequencies(md%l+1, md%n_p) = (md%freq('UHZ') - s% nu_max) / s% delta_nu
-                    ng_array(md%n_p) = md%n_g
-
-
-                    if (md%n_p == s% x_integer_ctrl(1) - 1) then ! store the eigenfunction 
-                       if (allocated(xi_r_dipole)) deallocate(xi_r_dipole)
-                       allocate(xi_r_dipole(md%n_k))
-
-                       write(*, *) "nk is", md%n_k 
-                       write(*, *) "nz is", s%nz
-
-                       do k = 1, md%n_k
-                          xi_r_dipole(k) = md%xi_r(k)
-                       end do
-                       xi_r_dipole = xi_r_dipole(md%n_k:1:-1)
-                    end if
-
 
                 end if
             end if

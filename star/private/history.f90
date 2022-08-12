@@ -31,7 +31,7 @@
       use chem_def
       use history_specs
       use star_utils
-      ! use using_gyre ! TODO
+      use using_gyre, only: get_Delta_nu
 
       implicit none
 
