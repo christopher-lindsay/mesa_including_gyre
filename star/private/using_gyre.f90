@@ -56,21 +56,30 @@
          real(dp) :: hold, nu_max, nu_range
          logical, allocatable :: use_n(:)
          type(star_info), pointer :: s
-
-
-         
-
-
          ierr = 0 
          call star_ptr(id, s, ierr) 
          if (ierr /= 0) return 
 
-         !   call star_get_pulse_data(s%id, 'GYRE', .TRUE., .FALSE., .TRUE., global_data, point_data,ierr) !logicals are add_center,
-         if (ierr /=0) then                                                                             !keep_surface, add_atmosphere 
-         print *, 'Failed when caling star_get_pulse_data' 
-         return 
-         end if 
 
+        if (GYRE_IS_ENABLED) then         
+         
+         ! first try local directory
+         filename = gyre_inlist_name
+
+         if(level==1) then ! First pass either the user set the file or we load the defaults
+            if (len_trim(filename) == 0) filename = 'gyre.in'
+
+            exists=.false.
+            inquire(file=filename,exist=exists)
+
+            if(.not.exists) filename = trim(mesa_dir) // '/star/defaults/gyre_delta_nu.defaults'
+         else
+            ! User had include '' in their profile_columns.list file, so dont try to load the local one, jump to the defaults
+            if (len_trim(filename) == 0) filename =trim(mesa_dir) // '/star/defaults/gyre_delta_nu.defaults'
+         end if
+
+         call init_gyre(filename)
+         
          num_results = 0 
 
          call astero_gyre_get_modes(id, 0, .TRUE., ierr) 
@@ -125,6 +134,8 @@
          inertia = 0 
 
          return 
+       endif
+
        end subroutine get_Delta_nu
 
 
@@ -194,5 +205,5 @@
   
 
 
-      end module brunt
+      end module using_gyre
 
