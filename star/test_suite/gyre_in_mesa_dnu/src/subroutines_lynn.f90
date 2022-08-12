@@ -17,7 +17,7 @@
          if (ierr /= 0) return 
          !   call star_get_pulse_data(s%id, 'GYRE', .TRUE., .FALSE., .TRUE., global_data, point_data,ierr) !logicals are add_center,
          if (ierr /=0) then                                                                             !keep_surface, add_atmosphere 
-         print *, 'Failed when caling star_get_pulse_data' 
+         print *, 'Failed when calling star_get_pulse_data' 
          return 
          end if 
          
