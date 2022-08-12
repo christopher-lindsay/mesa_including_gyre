@@ -139,6 +139,8 @@
 
       ! you might want to get a more complete list of mixing regions by using the following
 
+      mixing_regions 40
+
       !mixing_regions <integer> ! note: this includes regions where the mixing type is no_mixing.
 
          ! the <integer> is the number of regions to report
@@ -249,7 +251,7 @@
       !log_extra_L ! log10 extra_L
 
    !## neutrino losses
-      !log_Lneu ! log10 power emitted in neutrinos, nuclear and thermal (in Lsun units)
+      log_Lneu ! log10 power emitted in neutrinos, nuclear and thermal (in Lsun units)
       !log_Lneu_nuc ! log10 power emitted in neutrinos, nuclear sources only (in Lsun units)
       !log_Lneu_nonnuc ! log10 power emitted in neutrinos, thermal sources only (in Lsun units)
 
@@ -264,7 +266,7 @@
 
       pp
       cno
-      tri_alpha
+      !tri_alfa
       !c_alpha
       !n_alpha
       !o_alpha
@@ -334,6 +336,8 @@
 
 
       ! you might want to get a more complete list of burning regions by using the following
+
+      burning_regions 80
 
       !burning_regions <integer>
          ! the <integer> is the number of regions to report
@@ -429,7 +433,7 @@
 
 !# timescales
 
-      !dynamic_timescale ! dynamic timescale (seconds) -- estimated by 2*pi*sqrt(r^3/(G*m))
+      dynamic_timescale ! dynamic timescale (seconds) -- estimated by 2*pi*sqrt(r^3/(G*m))
       !kh_timescale ! kelvin-helmholtz timescale (years)
       !mdot_timescale ! star_mass/abs(star_mdot) (years)
       !kh_div_mdot_timescales ! kh_timescale/mdot_timescale
@@ -458,7 +462,7 @@
 
    !## conditions at the photosphere
       !effective_T
-      !Teff
+      Teff
       log_Teff ! log10 effective temperature
          ! Teff is calculated using Stefan-Boltzmann relation L = 4 pi R^2 sigma Teff^4,
          ! where L and R are evaluated at the photosphere (tau_factor < 1)
@@ -491,11 +495,11 @@
 
    !## conditions at or near the surface of the model (outer edge of outer cell)
 
-      !luminosity ! luminosity in Lsun units
+      luminosity ! luminosity in Lsun units
       !luminosity_ergs_s ! luminosity in cgs units
       log_L ! log10 luminosity in Lsun units
       !log_L_ergs_s ! log10 luminosity in cgs units
-      !radius ! Rsun
+      radius ! Rsun
       log_R ! log10 radius in Rsun units
       !radius_cm
       !log_R_cm
@@ -728,12 +732,12 @@
 
 !# asteroseismology
 
-      !delta_nu ! large frequency separation for p-modes (microHz)
+      delta_nu ! large frequency separation for p-modes (microHz)
          ! 1e6/(seconds for sound to cross diameter of star)
       !delta_Pg ! g-mode period spacing for l=1 (seconds)
          ! sqrt(2) pi^2/(integral of brunt_N/r dr)
       !log_delta_Pg
-      !nu_max ! estimate from scaling relation (microHz)
+      nu_max ! estimate from scaling relation (microHz)
          ! nu_max = nu_max_sun * M/Msun / ((R/Rsun)^2 (Teff/Teff_sun)^0.5)
          ! with nu_max_sun = 3100 microHz, Teff_sun = 5777
       !nu_max_3_4th_div_delta_nu ! nu_max^0.75/delta_nu
@@ -743,10 +747,6 @@
          ! period for g-mode with frequency nu_max = nu_max_ng*delta_Pg
       !gs_per_delta_nu ! delta_nu / (nu_max**2*delta_Pg)
          ! number of g-modes per delta_nu at nu_max
-
-      !delta_nu_from_gyre ! large frequency separation from radial modes (muHz)
-      !fundamental_freq ! frequency of the l=0, n=1 mode (muHz)
-      !first_overtone_freq ! frequency of the l=0, n=2 mode (muHz)
 
       !int_k_r_dr_nu_max_Sl1 ! integral of k_r*dr where nu < N < Sl for nu = nu_max, l=1
       !int_k_r_dr_2pt0_nu_max_Sl1 ! integral of k_r*dr where nu < N < Sl for nu = nu_max*2, l=1
@@ -828,7 +828,7 @@
 
       !error_in_energy_conservation ! for this step
          ! = total_energy - (total_energy_start + total_energy_sources_and_sinks)
-      !cumulative_energy_error ! = sum over all steps of abs(error_in_energy_conservation)
+      !cumulative_energy_error ! = sum over all steps of error_in_energy_conservation
       !rel_cumulative_energy_error ! = cumulative_energy_error/total_energy
       !log_rel_cumulative_energy_error ! = log10 of rel_cumulative_energy_error
       !log_rel_run_E_err ! shorter name for rel_cumulative_energy_error
