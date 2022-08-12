@@ -31,7 +31,7 @@
       use star_utils
       use utils_lib
       use auto_diff_support, only: get_w, get_etrb
-      use using_gyre, only: xi_r_fund, xi_r_1o
+      use using_gyre!, only: xi_r_fund, xi_r_1o
 
       implicit none
 
@@ -2285,10 +2285,10 @@
 
             case(p_xi_r_fund)
                 !call get_xi_r_fund(id, xi_r_fundamental, k)
-                val = xi_r_fund(k)
+                val = 0 !xi_r_fund(k)
             case(p_xi_r_1o)
                 !call get_xi_r_1o(id, xi_r_overtone, k)
-                val = xi_r_1o(k)
+                val = 0 !xi_r_1o(k)
 
             case default
                write(*,*) 'FATAL ERROR in profile_getval', c, k
