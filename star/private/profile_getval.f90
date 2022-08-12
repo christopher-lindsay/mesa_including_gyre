@@ -273,7 +273,7 @@
          integer, intent(out) :: int_val
          logical, intent(inout) :: int_flag
 
-         real(dp) :: raw_rate
+         real(dp) :: raw_rate, xi_r_fundamental, xi_r_overtone
          type (T_Factors), pointer :: tf
          type (T_Factors), target :: tf2
          !integer, pointer :: reaction_id(:) ! maps net reaction number to reaction id
@@ -2283,9 +2283,11 @@
                val = s% max_abs_xa_corr(k)
 
             case(xi_r_fund)
-                val = s% xi_r_fund(k)
+                call get_xi_r_fund(id, xi_r_fundamental, k)
+                val = xi_r_fundamental
             case(xi_r_1o)
-                val = s% xi_r_1o(k)
+                call get_xi_r_1o(id, xi_r_overtone, k)
+                val = xi_r_overtone
 
             case default
                write(*,*) 'FATAL ERROR in profile_getval', c, k
