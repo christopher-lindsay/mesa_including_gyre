@@ -43,6 +43,8 @@
 
       contains
 
+       
+
        subroutine get_Delta_nu(id, Delta_nu, num_freqs) 
 
          integer, intent(in) :: id
@@ -148,7 +150,7 @@
        end subroutine get_lsq_fit
 
 
-
+  
 
 
       end module brunt
