@@ -1,24 +1,14 @@
-.. _test_case_template:
+.. _gyre_in_mesa_dnu:
 
 ******************
-test_case_template
+gyre_in_mesa_dnu
 ******************
 
-Test suite cases should have a ``README.rst`` file that contains a
-brief description of the test and its purpose.
+This test suite checks whether the delta_nu computed by MESA is within 1 percent of the one computed by GYRE.
 
-If possible, articulate the criteria that indicate a passing test and
-include information that would allow someone else to evaluate the test
-status.  Supplementary material like plots, plotting scripts, etc.,
-should go in a subdirectory ``docs``.
+The first inlist evolves a star of 1Msun from the pre-MS to near-TAMS.
 
-For tests that are likely to serve as examples of MESA usage, provide
-additional information about key options or important caveats.  This
-assists users who are adapting the test case to their own science.
 
-The README file should end with a line that describes when the most
-recent significant changes to this test case occurred.  This gives
-both users and developers a sense of how "fresh" the information is.
+The second inlist loads in this near-TAMS model and continues to evolve the star to log(Teff)=3.7 and uses GYRE to compute delta_nu and the fundamental frequency.
 
-Last-Updated: 2020-10-01 (mesa r14552) by Josiah Schwab
-
+Last-Updated: 12Aug2022 (MESA 22.05.1).
