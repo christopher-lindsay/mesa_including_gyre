@@ -39,129 +39,134 @@
       real(dp) :: radial_freqs(100), radial_orders(100), radial_inertias(100) 
       integer :: num_radial_modes         
       logical :: add_atmosphere, keep_surface_point, add_center_point 
-
+      logical :: gyre_radial_modes_calculated = .false. 
+      logical :: GYRE_IS_ENABLED = .true.
       contains
 
 
-      !subroutine get_Delta_nu(id, Delta_nu) 
+       subroutine get_Delta_nu(id, Delta_nu) 
+       
+         integer, intent(in) :: id
+         real(dp), intent(out) :: Delta_nu 
+         integer :: num_freqs, num_results, num_sel, level
+         integer :: ierr, n,i, num_seli
+         character(len=1000) :: filename
+         real(dp), allocatable :: global_data(:), sel_ord(:), sel_nu(:) 
+         real(dp), allocatable :: point_data(:,:)  
+         real(dp) :: hold, nu_max, nu_range
+         logical, allocatable :: use_n(:)
+         type(star_info), pointer :: s
+         ierr = 0 
+         call star_ptr(id, s, ierr) 
+         if (ierr /= 0) return 
 
-      !  integer, intent(in) :: id
-      !  real(dp), intent(out) :: Delta_nu 
-      !  integer :: num_freqs
-      !  integer :: ierr, n,i, num_sel
-      !  real(dp), allocatable :: global_data(:), sel_ord(:), sel_nu(:) 
-      !  real(dp), allocatable :: point_data(:,:)  
-      !  real(dp) :: hold, nu_max, nu_range
-      !  logical, allocatable :: use_n(:)
-      !  type(star_info), pointer :: s
-      !  ierr = 0 
-      !  call star_ptr(id, s, ierr) 
-      !  if (ierr /= 0) return 
+       
+        if (GYRE_IS_ENABLED) then         
 
-
-      ! if (GYRE_IS_ENABLED) then         
-      !  ! load the gyre inlist and initialize gyre
-      !  ! first try local directory
-      !  filename = gyre_inlist_name
-
-      !  if(level==1) then ! First pass either the user set the file or we load the defaults
-      !     if (len_trim(filename) == 0) filename = 'gyre.in'
-
-      !     exists=.false.
-      !     inquire(file=filename,exist=exists)
-
-      !     if(.not.exists) filename = trim(mesa_dir) // '/star/defaults/gyre_delta_nu.defaults'
-      !  else
-      !     ! User had include '' in their gyre.in file, so dont try to load the local one, jump to the defaults
-      !     if (len_trim(filename) == 0) filename =trim(mesa_dir) // '/star/defaults/gyre_delta_nu.defaults'
-      !  end if
+         if (.not. gyre_radial_modes_calculated) call get_radial_modes(id,s,ierr)
 
 
-      !  ! initialize gyre and set constants using the subroutines in gyre_lib 
-      !  call gyre_init(filename)
+           num_results = 0 
+           nu_max = s% nu_max
+           nu_range = 0.5 * nu_max**0.9 ! Mosser et al. 2010         
 
-      !  call gyre_set_constant('G_GRAVITY', standard_cgrav)
-      !  call gyre_set_constant('C_LIGHT', clight)
-      !  call gyre_set_constant('A_RADIATION', crad)
+           num_sel = 0 
 
-      !  call gyre_set_constant('M_SUN', Msun)
-      !  call gyre_set_constant('R_SUN', Rsun)
-      !  call gyre_set_constant('L_SUN', Lsun)
+           allocate(use_n(num_results)) 
+           use_n(:) = .false. 
 
-      !  call gyre_set_constant('GYRE_DIR', TRIM(mesa_dir)//'/gyre/gyre')
+           do n = 1, num_results 
+           if (radial_freqs(n) > nu_max-nu_range .and. radial_freqs(n) < nu_max+nu_range) then 
+                num_sel = num_sel + 1 
+                use_n(n) = .true. 
+           end if 
+           end do 
 
-      !  
-      !  num_results = 0 
+           allocate(sel_ord(num_sel)) 
+           allocate(sel_nu(num_sel))  
+       
+           i = 1 
+           do n =1, num_results 
+           if (use_n(n)) then 
+               sel_ord(i) = radial_orders(n) 
+               sel_nu(i) = radial_freqs(n) 
+               i = i+1 
+           endif 
+           enddo 
+
+           num_freqs = num_sel  
+           call get_lsq_fit(num_sel, sel_ord, sel_nu, Delta_nu, hold) ! Or any built in function that will get a slope of a line fit to data points 
+         
+            deallocate(use_n) 
+            deallocate(sel_ord) 
+            deallocate(sel_nu) 
+            
+          
+          return 
+        
+        else 
+         write(*,*) "GYRE is not enabled"
+         return 
+
+       endif 
+
+      end subroutine get_Delta_nu
+      
 
 
-      !  ! call gyre_get_modes for the radial (el=0) modes
-
-
-      !  if (ierr /=0) then 
-      !  print *, 'Failed when calling do_gyre_get_modes' 
-      !  return 
-      !  end if
-
-      !  nu_max = s% nu_max 
-      !  nu_range = 0.5 * nu_max**0.9 ! Mosser et al. 2010 
-      !  num_sel = 0 
-
-      !  allocate(use_n(num_results)) 
-      !  use_n(:) = .false. 
-
-      !  do n = 1, num_results 
-      !  if (cyclic_freq(n) > nu_max-nu_range .and. cyclic_freq(n) < nu_max+nu_range) then 
-      !       num_sel = num_sel + 1 
-      !       use_n(n) = .true. 
-      !  end if 
-      !  end do 
-
-      !  allocate(sel_ord(num_sel)) 
-      !  allocate(sel_nu(num_sel)) 
-
-      !  i = 1 
-      !  do n =1, num_results 
-      !  if (use_n(n)) then 
-      !      sel_ord(i) = order(n) 
-      !      sel_nu(i) = cyclic_freq(n) 
-      !      i = i+1 
-      !  endif 
-      !  enddo 
-
-      !  num_freqs = num_sel  
-      !  call get_lsq_fit(num_sel, sel_ord, sel_nu, Delta_nu, hold) ! Or any built in function that will get a slope of a line fit to data points 
-      !  
-      !  deallocate(use_n) 
-      !  deallocate(sel_ord) 
-      !  deallocate(sel_nu) 
-      !  
-      !  ! Clear out frequency results     
-      !  num_results = 0 
-      !  el = 0 
-      !  order = 0 
-      !  em = 0 
-      !  cyclic_freq = 0 
-      !  growth_rate = 0 
-      !  inertia = 0 
-
-      !  return 
-      !endif
-
-      !end subroutine get_Delta_nu
-      subroutine get_radial_modes(id,s,ierr) 
+        subroutine get_radial_modes(id,s,ierr) 
             integer, intent(in) :: id 
             integer, intent(out) :: ierr 
             type(star_info), pointer :: s 
-            integer :: numl0
+            integer :: numl0, level
+            logical :: exists
+            character(len=1000) :: filename
             real(dp), allocatable :: global_data(:) 
             real(dp), allocatable :: point_data(:,:) 
             integer               :: ipar(0), num_modes, i ,itemp, istart 
             real(dp)              :: rpar(0), temp_freqs(100), temp_ens(100)  
             real(dp) :: temp 
-     
+            call star_ptr(id, s, ierr) 
+            if (ierr /= 0) return
+ 
             add_atmosphere = s% add_atmosphere_to_pulse_data
             keep_surface_point = s% add_center_point_to_pulse_data
             add_center_point = s% keep_surface_point_for_pulse_data
+
+
+            ! load the gyre inlist and initialize gyre
+            ! first try local directory
+            filename = s% job% gyre_inlist_name
+       
+            if(level==1) then ! First pass either the user set the file or we load the defaults
+               if (len_trim(filename) == 0) filename = 'gyre.in'
+       
+               exists=.false.
+               inquire(file=filename,exist=exists)
+       
+               if(.not.exists) filename = trim(mesa_dir) // '/star/defaults/gyre_delta_nu.defaults'
+            else
+               ! User had include '' in their gyre.in file, so dont try to load the local one, jump to the defaults
+               if (len_trim(filename) == 0) filename =trim(mesa_dir) // '/star/defaults/gyre_delta_nu.defaults'
+            end if
+       
+       
+            ! initialize gyre and set constants using the subroutines in gyre_lib 
+            call gyre_init(filename)
+       
+            call gyre_set_constant('G_GRAVITY', standard_cgrav)
+            call gyre_set_constant('C_LIGHT', clight)
+            call gyre_set_constant('A_RADIATION', crad)
+       
+            call gyre_set_constant('M_SUN', Msun)
+            call gyre_set_constant('R_SUN', Rsun)
+            call gyre_set_constant('L_SUN', Lsun)
+       
+            call gyre_set_constant('GYRE_DIR', TRIM(mesa_dir)//'/gyre/gyre')
+
+
+
+
             ! Pass model to GYRE 
             ! Logcials are add_center, keep_surface,add_atmosphere
             call star_get_pulse_data(id, 'GYRE', add_center_point, & 
